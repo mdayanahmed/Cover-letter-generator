@@ -1,0 +1,26 @@
+/* Animated Header */
+.animated-title {
+    animation: fadeIn 2s ease-in-out;
+    color: #2E8B57;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    0% {opacity: 0; transform: translateY(-20px);}
+    100% {opacity: 1; transform: translateY(0);}
+}
+
+/* Download button */
+.stDownloadButton button {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+/* Streamlit layout tweaks */
+section.main > div {
+    padding: 2rem;
+}
