@@ -14,6 +14,13 @@ from github import Github
 
 # ====== Page Config & LinkedIn link ======
 st.set_page_config(page_title="AI Career Assistant", layout="wide", page_icon="🧠")
+def inject_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+inject_css("style.css")
+
+
 
 hide_github_style = """
     <style>
