@@ -1,1 +1,20 @@
+[theme]
+primaryColor = "#2E8B57"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f2f6"
+textColor = "#000000"
 
+[server]
+enableStaticServing = true
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "minimal"
+
+menuItems.clear = true
+
+menuItems.customItems = [
+  { label = "🔗 Connect on LinkedIn", url = "https://www.linkedin.com/in/your-profile" }
+]
