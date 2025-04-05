@@ -7,6 +7,17 @@ st.write("Generate a personalized cover letter using your resume and job descrip
 
 # User input OpenAI API key
 user_api_key = st.text_input("Enter your OpenAI API Key", type="password")
+
+# Help/info message for users who don't know about API keys
+st.info(
+    "Don't have an OpenAI API key?\n\n"
+    "1. Go to https://platform.openai.com/account/api-keys\n"
+    "2. Log in or sign up\n"
+    "3. Click 'Create new secret key'\n"
+    "4. Copy and paste the key here\n\n"
+    "**Note:** Your key is secure and used only in this session."
+)
+
 if not user_api_key:
     st.warning("Please enter your OpenAI API key to proceed.")
     st.stop()
