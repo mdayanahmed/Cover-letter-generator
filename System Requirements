@@ -1,0 +1,6 @@
+Python 3.7+
+OpenAI API Key
+Tesseract OCR (for image-to-text)
+Windows: Tesseract Installer
+macOS: brew install tesseract
+Linux: sudo apt install tesseract-ocr
