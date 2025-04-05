@@ -12,68 +12,44 @@ from datetime import datetime
 from io import BytesIO
 from github import Github
 
-# ====== Page Config & LinkedIn link ======
-st.set_page_config(page_title="AI Career Assistant", layout="wide", page_icon="🧠")
+# Inject custom CSS
 def inject_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+st.set_page_config(page_title="AI Career Assistant", layout="wide")
 inject_css("style.css")
 
+st.markdown("<h1 class='animated-title'>💼 AI Cover Letter & Resume Optimizer</h1>", unsafe_allow_html=True)
 
-
-hide_github_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    .css-1v3fvcr.e8zbici2 {display: none;}
-    .stDeployButton {display: none;}
-    .css-164nlkn {display: none;}
-    header:after {
-        content: "🔗 Connect on LinkedIn";
-        position: fixed;
-        top: 10px;
-        right: 20px;
-        background-color: #0072b1;
-        color: white;
-        padding: 6px 12px;
-        border-radius: 5px;
-        font-size: 14px;
-        z-index: 100;
-    }
-    </style>
-"""
-st.markdown(hide_github_style, unsafe_allow_html=True)
-
-st.title("🚀 AI Cover Letter & Resume Optimizer")
-
-# ====== OpenAI API Key Note ======
+# ℹ️ Note for OpenAI API key
 with st.expander("ℹ️ What is an OpenAI API Key?"):
     st.markdown("""
-        **OpenAI API Key** ek unique password jaisa hota hai jo aapko OpenAI ki services (GPT-3.5 etc.) use karne deta hai.  
-        🔑 [Generate your API key here](https://platform.openai.com/account/api-keys)  
-        📋 Copy karke neeche daaliye. Apni key secure rakhiye!
+        **OpenAI API Key** ek unique password jaisa hota hai jo aapko OpenAI ki services (jaise GPT-3.5) use karne deta hai.
+
+        🔑 Aap apni API key yahan se generate kar sakte ho: [OpenAI API Keys](https://platform.openai.com/account/api-keys)
+
+        📌 Bas key ko copy karke upar ke box me daalo.
+
+        ⚠️ Apni key kisi ke saath share mat karna.
     """)
 
-# ====== API Key Input ======
 user_api_key = st.text_input("🔐 Enter your OpenAI API Key", type="password")
 if not user_api_key:
     st.warning("Please enter your OpenAI API key to proceed.")
     st.stop()
 openai.api_key = user_api_key
 
-# ====== Uploads ======
+# Upload Resume & JD
+st.subheader("📄 Upload Resume & Job Description")
 col1, col2 = st.columns(2)
 with col1:
-    st.subheader("📄 Upload Resume")
-    resume_file = st.file_uploader("PDF, DOCX, TXT", type=["pdf", "docx", "txt"])
-    resume_text_input = st.text_area("Or paste resume text here", height=200)
+    resume_file = st.file_uploader("Resume (PDF, DOCX, or TXT)", type=["pdf", "docx", "txt"])
+    resume_text_input = st.text_area("Or Paste Resume", height=150)
 with col2:
-    st.subheader("🧾 Upload Job Description")
-    jd_file = st.file_uploader("PDF, DOCX, TXT, or Image", type=["pdf", "docx", "txt", "png", "jpg", "jpeg"])
-    jd_text_input = st.text_area("Or paste JD text here", height=200)
+    jd_file = st.file_uploader("Job Description (PDF, DOCX, TXT, or Image)", type=["pdf", "docx", "txt", "png", "jpg", "jpeg"])
+    jd_text_input = st.text_area("Or Paste JD", height=150)
 
-# ====== Extract Text ======
 def extract_text_from_file(uploaded_file):
     if uploaded_file is None: return ""
     _, ext = os.path.splitext(uploaded_file.name)
@@ -92,7 +68,6 @@ def extract_text_from_file(uploaded_file):
 resume_text = resume_text_input or extract_text_from_file(resume_file)
 job_text = jd_text_input or extract_text_from_file(jd_file)
 
-# ====== Smart Dashboard ======
 def show_dashboard(improvements_dict):
     df = pd.DataFrame(list(improvements_dict.items()), columns=["Feature", "Improvement (%)"])
     st.subheader("📊 Smart Resume Improvement Dashboard")
@@ -102,9 +77,9 @@ def show_dashboard(improvements_dict):
     st.pyplot(fig1)
 
     fig2, ax2 = plt.subplots()
-    ax2.bar(df["Feature"], df["Improvement (%)"], color='skyblue')
+    ax2.bar(df["Feature"], df["Improvement (%)"], color='lightgreen')
     ax2.set_ylabel("Improvement (%)")
-    ax2.set_title("Resume Feature-Wise Improvement")
+    ax2.set_title("Feature-Wise Improvement")
     st.pyplot(fig2)
 
     excel_path = "resume_improvement.xlsx"
@@ -112,14 +87,14 @@ def show_dashboard(improvements_dict):
     with open(excel_path, "rb") as f:
         st.download_button("⬇️ Download Excel", f, file_name="resume_improvement.xlsx")
 
-    def save_fig(fig, filename):
+    def save_fig_as_image(fig, filename):
         buf = BytesIO()
         fig.savefig(buf, format="png")
         with open(filename, "wb") as f:
             f.write(buf.getbuffer())
 
-    save_fig(fig1, "pie_chart.png")
-    save_fig(fig2, "bar_chart.png")
+    save_fig_as_image(fig1, "pie_chart.png")
+    save_fig_as_image(fig2, "bar_chart.png")
 
     github_token = st.secrets["github"]["token"]
     repo_name = "mdayanahmed/Cover-letter-generator"
@@ -135,23 +110,23 @@ def show_dashboard(improvements_dict):
     upload_to_github("pie_chart.png")
     upload_to_github("bar_chart.png")
     upload_to_github(excel_path)
-    st.success("✅ Charts and Excel uploaded to GitHub!")
+    st.success("✅ Uploaded to GitHub!")
 
-# ====== Buttons ======
 if resume_text and job_text:
-    colA, colB, colC = st.columns(3)
+    st.subheader("⚙️ Choose Your Action")
 
+    colA, colB, colC = st.columns(3)
     with colA:
         if st.button("✉️ Generate Cover Letter"):
-            with st.spinner("Generating..."):
-                prompt = f"Write a professional cover letter based on:\nResume:\n{resume_text}\nJob Description:\n{job_text}"
+            with st.spinner("Writing..."):
+                prompt = f"""Write a professional cover letter based on:\nResume: {resume_text}\n\nJob Description: {job_text}"""
                 response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.7
                 )
                 cover_letter = response.choices[0].message.content
-                st.text_area("📄 Cover Letter Preview", cover_letter, height=300)
+                st.text_area("📄 Preview", cover_letter, height=300)
                 doc = Document()
                 doc.add_heading("Cover Letter", 0)
                 doc.add_paragraph(cover_letter)
@@ -160,18 +135,15 @@ if resume_text and job_text:
                     st.download_button("⬇️ Download Cover Letter", file, "Cover_Letter.docx")
 
     with colB:
-        if st.button("🛠️ Suggest Resume Improvements"):
+        if st.button("🛠️ Resume Suggestions"):
             with st.spinner("Analyzing..."):
-                prompt = f"""You are a resume expert. Based on the resume and job description, suggest area-wise improvement percentages:
+                prompt = f"""You are a resume expert. Based on resume and JD, give improvement % like:
 Skill Match: 80%
 Action Verbs: 60%
 Achievements: 70%
 ATS Keywords: 75%
 Formatting: 65%
-Also give suggestions below.
-
-Resume: {resume_text}
-Job: {job_text}"""
+And also give suggestions below.\n\nResume: {resume_text}\n\nJob: {job_text}"""
                 response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}],
@@ -180,12 +152,11 @@ Job: {job_text}"""
                 content = response.choices[0].message.content
                 st.markdown("### 📈 Resume Suggestions")
                 st.markdown(content)
-
                 improvements = {}
                 for line in content.splitlines():
                     if ":" in line and "%" in line:
-                        key, val = line.split(":")
                         try:
+                            key, val = line.split(":")
                             improvements[key.strip()] = int(val.strip().replace("%", ""))
                         except:
                             pass
@@ -193,9 +164,9 @@ Job: {job_text}"""
                     show_dashboard(improvements)
 
     with colC:
-        if st.button("💼 Suggest Job Roles"):
+        if st.button("💼 Job Titles"):
             with st.spinner("Finding roles..."):
-                prompt = f"Suggest 5 job roles based on this resume:\n{resume_text}"
+                prompt = f"Suggest 5 job titles based on this resume:\n{resume_text}"
                 response = openai.ChatCompletion.create(
                     model="gpt-3.5-turbo",
                     messages=[{"role": "user", "content": prompt}]
@@ -203,7 +174,6 @@ Job: {job_text}"""
                 st.markdown("### 🧑‍💼 Job Role Suggestions")
                 st.markdown(response.choices[0].message.content)
 
-    # ATS & Interview (row 2)
     col4, col5 = st.columns(2)
     with col4:
         if st.button("📊 ATS Match Score"):
@@ -234,6 +204,5 @@ JD: {job_text}"""
                 )
                 st.markdown("### ❓ Likely Interview Questions")
                 st.markdown(response.choices[0].message.content)
-
 else:
     st.info("📥 Please upload or paste both Resume and Job Description to begin.")
