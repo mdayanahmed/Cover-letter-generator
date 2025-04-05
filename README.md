@@ -25,9 +25,10 @@ An AI-powered Streamlit app that helps job seekers generate **personalized cover
 
 ---
 
-## Demo
+## Visit The App
 
-![App Screenshot Placeholder](https://via.placeholder.com/800x400?text=Demo+Coming+Soon)
+https://mdayanahmed-cover-letter-generator.streamlit.app
+
 
 ---
 
