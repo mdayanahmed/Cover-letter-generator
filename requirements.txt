@@ -5,3 +5,6 @@ fpdf
 pytesseract
 pymupdf
 pillow
+matplotlib
+pandas
+PyGithub
