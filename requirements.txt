@@ -1,3 +1,7 @@
 streamlit
 openai
 python-docx
+fpdf
+pytesseract
+pymupdf
+pillow
